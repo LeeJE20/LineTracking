@@ -50,10 +50,10 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
    - 차선이 사라지기 전 지금까지의 20개 평균으로 찾기
 
 ## 6. Mat drawLines(vector&lt;Point&gt; lines) <br>
-    - 원본 영상에 찾은 차선 표시
+- 원본 영상에 찾은 차선 표시
   
 ## 7. Mat service(vector&lt;Point&gt; lines) <br>
-    - 차선 이탈시 표시
+- 차선 이탈시 표시
   
 
 # Expansion
