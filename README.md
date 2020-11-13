@@ -27,7 +27,7 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
 - 대비 늘리기: IcreaseContrast 함수 사용
 - 가우시안필터로 블러링
 
-## __2. vector<Point> findEdgeLines(Mat img, int threshold) <br>__
+## __2. vector&lt;Point&gt; findEdgeLines(Mat img, int threshold) <br>__
   - int threshold : 허프라인스p에서 사용할 vote 수
   - 리턴: 찾은 라인들의 좌표. 2개씩 짝지어서 한 라인을 이룬다.
   - 캐니 엣지
