@@ -45,14 +45,14 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
   - p1과 p2의 맨 앞 원소 삭제를 2회 반복
   - p1과 p2의 맨 뒤에 새로 찾은 point 추가 (2회 반복)
 
-## __5. vector<Point> findMeanLine() <br>__
+## 5. vector<Point> findMeanLine() <br>
    - find2Line 결과로 찾은 라인이 없는 경우 실행됨
    - 차선이 사라지기 전 지금까지의 20개 평균으로 찾기
 
-## __6. Mat drawLines(vector<Point> lines) <br>__
+## 6. Mat drawLines(vector<Point> lines) <br>
     - 원본 영상에 찾은 차선 표시
   
-## _7. Mat service(vector<Point> lines) <br>__
+## 7. Mat service(vector<Point> lines) <br>
     - 차선 이탈시 표시
   
 
