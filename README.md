@@ -7,8 +7,8 @@ start: 2020.11.13
 * Microsoft Visual C++ 2019
 
 # Global Variables
-- queue<Point> p1 : 차선의 좌표1
-- queue<Point> p2 : 차선의 좌표2
+- queue&lt;Point&gt; p1 : 차선의 좌표1
+- queue&lt;Point&gt; p2 : 차선의 좌표2
 <br>
 p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
   
@@ -34,25 +34,25 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
   - 허프라인스p
     + 곡선 찾기
 
-## __3. vector<Point> find2Line(vector<Point> lines) <br>__
-   - vector<Point> lines: findEdgeLines의 결과.
+## __3. vector&lt;Point&gt; find2Line(vector&lt;Point&gt; lines) <br>__
+   - vector&lt;Point&gt; lines: findEdgeLines의 결과.
    - 여러 라인 중 차선으로 지정할 라인 찾기
       + 거리가 가까운 라인끼리 클러스터 이룬 후 그 중 평균을 구한다.
    - 리턴: left line, right line의 좌표. 2개씩 짝지어서 한 라인을 이룬다.
 
-## __4. void addNewPoint( vector<Point> lines) <br>__
+## __4. void addNewPoint( vector&lt;Point&gt; lines) <br>__
   - find2Line 결과로 찾은 라인이 있는 경우 실행됨
   - p1과 p2의 맨 앞 원소 삭제를 2회 반복
   - p1과 p2의 맨 뒤에 새로 찾은 point 추가 (2회 반복)
 
-## 5. vector<Point> findMeanLine() <br>
+## 5. vector&lt;Point&gt; findMeanLine() <br>
    - find2Line 결과로 찾은 라인이 없는 경우 실행됨
    - 차선이 사라지기 전 지금까지의 20개 평균으로 찾기
 
-## 6. Mat drawLines(vector<Point> lines) <br>
+## 6. Mat drawLines(vector&lt;Point&gt; lines) <br>
     - 원본 영상에 찾은 차선 표시
   
-## 7. Mat service(vector<Point> lines) <br>
+## 7. Mat service(vector&lt;Point&gt; lines) <br>
     - 차선 이탈시 표시
   
 
