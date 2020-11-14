@@ -46,13 +46,14 @@ Mat IncreaseContrast(Mat img) {
 Mat makeROI(Mat& img,int shape) {
 	Mat imgROI=img.clone();
 
+	imgROI = IncreaseContrast(imgROI);
+	GaussianBlur(imgROI, imgROI, Size(9, 9), 1.0);
+	
 	switch (shape) {
 	case 0:
 		rectangle(imgROI, Point(0, 0), Point(img.cols, img.rows/2), Scalar(0, 0, 0),FILLED);
 		cvtColor(imgROI, imgROI,COLOR_BGR2GRAY);
 
-		imgROI = IncreaseContrast(imgROI);
-		GaussianBlur(imgROI, imgROI, Size(9, 9), 1.0);
 		return imgROI;
 	case 1: {
 		rectangle(imgROI, Point(0, 0), Point(img.cols, img.rows / 2), Scalar(0, 0, 0), FILLED);
@@ -77,8 +78,7 @@ Mat makeROI(Mat& img,int shape) {
 
 		cvtColor(imgROI, imgROI, COLOR_BGR2GRAY);
 
-		imgROI = IncreaseContrast(imgROI);
-		GaussianBlur(imgROI, imgROI, Size(9, 9), 1.0);
+		
 		
 		return imgROI;
 	}
@@ -105,9 +105,6 @@ Mat makeROI(Mat& img,int shape) {
 
 		cvtColor(imgROI, imgROI, COLOR_BGR2GRAY);
 
-		imgROI = IncreaseContrast(imgROI);
-		GaussianBlur(imgROI, imgROI, Size(9, 9), 1.0);
-		
 		return imgROI;
 		}	
 	}
