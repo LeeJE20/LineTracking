@@ -19,15 +19,17 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
 ## __0. Mat IncreaseContrast(Mat img) <br>__
 - 히스토그램 평활화
 
-## __1. Mat makeROI(int shape = 0) <br>__
-- int shape: ROI 영역의 모양. 0: 아래쪽 절반, 1: 삼각형, 2: 사다리꼴
-- 영상에서 한 프레임씩 불러오기
-- ROI 만들기: 관심 영역 제외 나머지는 black
+## __1. Mat makeROI(Mat& img, int type) <br>__
+- int type : 리턴할 이미지를 어떻게 할지. 0: gray, 1: 전체 평활화, 2: 하단부 평활화
 - 흑백 변환
 - 대비 늘리기: IcreaseContrast 함수 사용
 - 가우시안필터로 블러링
 
-## __2. vector&lt;Point&gt; findEdgeLines(Mat img, int threshold) <br>__
+## __1.5 Mat hideNonROI(Mat& imgROI, int shape) <br>__
+ - int shape: ROI 영역의 모양. 0: 아래쪽 절반, 1: 삼각형, 2: 사다리꼴
+ - imgROI에서 ROI 영역의 모양 부분만 남기고 전부 black으로 바꾼다.
+
+## __2. vector&lt;Point&gt; findEdgeLines(Mat original, Mat img, int lowThres = 100, int highThres = 300, const char* windowName = "fel img") <br>__
   - int threshold : 허프라인스p에서 사용할 vote 수
   - 리턴: 찾은 라인들의 좌표. 2개씩 짝지어서 한 라인을 이룬다.
   - 캐니 엣지
@@ -49,7 +51,7 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
    - find2Line 결과로 찾은 라인이 없는 경우 실행됨
    - 차선이 사라지기 전 지금까지의 20개 평균으로 찾기
 
-## 6. Mat drawLines(vector&lt;Point&gt; lines) <br>
+## 6. Mat drawLines(Mat img, vector&lt;Point&gt; lines) <br>
 - 원본 영상에 찾은 차선 표시
   
 ## 7. Mat service(vector&lt;Point&gt; lines) <br>
