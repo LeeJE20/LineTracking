@@ -44,11 +44,43 @@ public: Histogram1D() { // 1차원 히스토그램을 위한 인자 준비
 
 Mat IncreaseContrast(Mat img) {
 	Histogram1D h;
-	
+
 	//Mat result = img.clone();
 	Mat result = h.equalize(img);
 
 	return result;
+}
+
+Mat changeColor(Mat img)
+{
+	Mat hsv = img.clone();
+	cvtColor(hsv, hsv, COLOR_BGR2HSV);
+	Scalar lowYellow = Scalar(25, 27, 92);
+	Scalar upYellow = Scalar(42, 60, 166);
+
+	Scalar lowWhite = Scalar(1, 15, 140);
+	Scalar upWhite = Scalar(255, 55, 255);
+
+	Scalar lowBlue = Scalar(90, 60, 60);
+	Scalar upBlue = Scalar(120, 255, 255);
+
+
+	Mat yellow = hsv.clone();
+	Mat white = hsv.clone();
+	Mat blue = hsv.clone();
+
+	inRange(hsv, lowYellow, upYellow, yellow);
+	inRange(hsv, lowWhite, upWhite, white);
+	inRange(hsv, lowBlue, upBlue, blue);
+
+	
+	imshow("yellow", yellow);
+	//cvtColor(yellow, yellow, COLOR_HSV2BGR);
+
+	imshow("white", white);
+
+	imshow("blue", blue);
+	return blue;
 }
 
 
@@ -57,10 +89,10 @@ Mat IncreaseContrast(Mat img) {
 Mat makeROI(Mat& img, int type) {
 	Mat imgROI = img.clone();
 
-	cvtColor(imgROI, imgROI, COLOR_BGR2GRAY);
-	
-	
-	
+	//cvtColor(imgROI, imgROI, COLOR_BGR2GRAY);
+
+
+
 	Mat underContrast = imgROI.clone();
 
 
@@ -89,7 +121,7 @@ Mat makeROI(Mat& img, int type) {
 	Mat roi = underContrast(r & bounds);
 	roi = IncreaseContrast(roi);
 	GaussianBlur(roi, roi, Size(9, 9), 1.0);
-	
+
 
 	// 하단부만 평활화한 영상 만들기
 	for (int j = img.rows / 2; j < img.rows; j++)
@@ -148,7 +180,7 @@ Mat hideNonROI(Mat& imgROI, int shape) {
 		return imgROI;
 
 	}
-	
+
 	case 2: {
 		rectangle(imgROI, Point(0, 0), Point(imgROI.cols, imgROI.rows / 2), Scalar(0, 0, 0), FILLED);
 
@@ -176,7 +208,7 @@ Mat hideNonROI(Mat& imgROI, int shape) {
 	}
 
 
-		return imgROI;
+		  return imgROI;
 	}
 
 }
@@ -192,8 +224,19 @@ Mat drawLines(Mat img, vector<Point> lines);
 
 Mat service(vector<Point> lines);
 
+
+// Global Variables
 queue<Point> p1;
 queue<Point> p2;
+const int alpha_slider_max = 255;
+int alpha_slider;
+double alpha;
+double beta;
+Mat image1, image2, dst;
+void on_trackbar(int, void*);
+
+
+
 
 
 int main(int argc, char** argv)
@@ -202,7 +245,7 @@ int main(int argc, char** argv)
 
 
 	//VideoCapture cap(argv[1]);
-	VideoCapture cap("clip3.mp4");
+	VideoCapture cap("clip1.mp4");
 	if (!cap.isOpened()) {
 		printf("Can't open the video");
 		return -1;
@@ -220,30 +263,44 @@ int main(int argc, char** argv)
 			return 0;
 		}
 		imshow("camera img", img);
-		Mat imgROI = makeROI(img, 0);
+
+		Mat blue = img.clone();
+		blue = changeColor(img);
+
+		Mat imgROI = makeROI(blue, 0);
 		imgROI = hideNonROI(imgROI, 0);
 		imshow("ROI img", imgROI);
 
-
-		Mat imgROI1 = makeROI(img, 1);
-		imgROI1 = hideNonROI(imgROI1, 0);
-		imshow("ROI1 img", imgROI1);
+		//
 
 
-		Mat imgROI2 = makeROI(img, 2);
-		imgROI2 = hideNonROI(imgROI2, 0);
-		imshow("ROI2 img", imgROI2);
+		//Mat imgROI1 = makeROI(img, 1);
+		//imgROI1 = hideNonROI(imgROI1, 0);
+		//imshow("ROI1 img", imgROI1);
 
 
-		
-		
+		//Mat imgROI2 = makeROI(img, 2);
+		//imgROI2 = hideNonROI(imgROI2, 0);
+		//imshow("ROI2 img", imgROI2);
+
+		//
+
+
+		//// 절반 평활화 (나중에 삭제)
+		//imgROI = imgROI2.clone();
+
+
+
 
 		vector<Point> lines;
 		lines = findEdgeLines(img, imgROI, 100, 300, "100~300");
-		lines = findEdgeLines(img, imgROI1, 100, 300, "imgROI1");
-		lines = findEdgeLines(img, imgROI2, 100, 300, "imgROI2");
+		//lines = findEdgeLines(img, imgROI1, 100, 300, "imgROI1");
+		//lines = findEdgeLines(img, imgROI2, 100, 300, "imgROI2");
 
 		//findEdgeLines(img, imgROI, 200, 300, "200~300");
+
+		//findEdgeLines(img, imgROI, 70, 210, "70~210");
+
 
 		//findEdgeLines(img, imgROI, 10, 300, "10~300");
 
@@ -260,7 +317,7 @@ int main(int argc, char** argv)
 		finalLines = find2Line(lines);
 
 		//if (finalLines.empty() && (!p1.empty()))
-		if (finalLines.empty()&& ( ! ( p1.empty()  )))
+		if (finalLines.empty() && (!(p1.empty())))
 		{
 			finalLines = findMeanLine();
 		}
@@ -269,15 +326,15 @@ int main(int argc, char** argv)
 			addNewPoint(finalLines);
 		}
 
-		
+
 		if (!finalLines.empty())
 		{
 			Mat lineImg;
 			lineImg = drawLines(img, finalLines);
 		}
-		
 
-		
+
+
 
 		if (waitKey(25) == 27)
 			break;
@@ -289,15 +346,15 @@ int main(int argc, char** argv)
 
 vector<Point> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, const char* windowName)
 {
-	
+
 	int kernel_size = 3;
-	
+
 	Mat contours = img.clone();
 	Mat dst1;
 	Canny(img, contours, lowThres, highThres, kernel_size);
 
 	dst1 = Scalar::all(0);
-	
+
 	img.copyTo(dst1, contours);
 	imshow(windowName, dst1);
 
@@ -362,16 +419,16 @@ vector<Point> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, 
 		double dy = l[3] - l[1];
 		double dx = l[2] - l[0];
 		double angle = atan(dy / dx) * (180.0 / CV_PI);
-		if (dx < 0.0) 
+		if (dx < 0.0)
 		{
 			angle += 180.0;
 		}
-		else if (dy < 0.0) 
+		else if (dy < 0.0)
 		{
 			angle += 360.0;
 		}
 
-		if ((angle > 30 &&angle < 150) || (angle > 210 && angle <330))
+		if ((angle > 30 && angle < 150) || (angle > 210 && angle < 330))
 		{ // 수직 행
 			line(original, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0, 0, 255), 2, 8);
 			//cout << "angle: " << angle << endl;
@@ -379,11 +436,11 @@ vector<Point> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, 
 			lp.push_back(p1);
 			lp.push_back(p2);
 		}
-		
+
 
 		cv::imshow(houphWindow, original);
 		//waitKey(0.1);
-	
+
 
 
 
@@ -396,7 +453,7 @@ vector<Point> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, 
 
 
 
-	
+
 	return lp;
 
 }
@@ -437,10 +494,10 @@ void addNewPoint(vector<Point> lines)
 	// find2Line 결과로 찾은 라인이 있는 경우
 	if (!lines.empty())
 	{
-		for (int i = 0; i < 3; i+=2)
+		for (int i = 0; i < 3; i += 2)
 		{
 			p1.push(lines[i]);
-			p2.push(lines[i+1]);
+			p2.push(lines[i + 1]);
 
 			if (p1.size() > 20)
 			{
@@ -484,7 +541,7 @@ vector<Point> findMeanLine()
 			pt = tmp2.front();
 			lft2x.push_back(pt.x);
 			lft2y.push_back(pt.y);
-			
+
 			tmp1.pop();
 			tmp2.pop();
 
@@ -520,7 +577,7 @@ vector<Point> findMeanLine()
 	int rght2yS = accumulate(rght2y.begin(), rght2y.end(), 0);
 
 	// 평균값으로 포인트 만들기
-	Point lft1 = ( Point( lft1xS / lft1x.size(), lft1yS / lft1y.size() ) );
+	Point lft1 = (Point(lft1xS / lft1x.size(), lft1yS / lft1y.size()));
 	Point lft2 = (Point(lft2xS / lft2x.size(), lft2yS / lft2y.size()));
 
 	Point rght1 = (Point(rght1xS / rght1x.size(), rght1yS / rght1y.size()));
