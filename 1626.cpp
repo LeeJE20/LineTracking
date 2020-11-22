@@ -227,7 +227,7 @@ Mat hideNonROI(Mat& imgROI, int shape) {
 vector<Point> findEdgeLines(Mat original, Mat img, int lowThres = 100, int highThres = 300, const char* windowName = "fel img");
 
 Mat houghLineImage(Mat img, Mat imgROI, vector<Point> red_lines);
-vector<Point> find2Line(vector<Point> lines);
+vector<Point> find2Line(vector<Point> lines, int cols);
 
 void addNewPoint(vector<Point> lines);
 vector<Point> findMeanLine();
@@ -247,7 +247,7 @@ int alpha_slider;
 double alpha;
 double beta;
 Mat image1, image2, dst;
-void on_trackbar(int, void*);
+
 
 
 
@@ -258,8 +258,8 @@ int main(int argc, char** argv)
 
 
 
-	//VideoCapture cap(argv[1]);
-	VideoCapture cap("clip3.mp4");
+	VideoCapture cap(argv[1]);
+	//VideoCapture cap("clip2.mp4");
 	if (!cap.isOpened()) {
 		printf("Can't open the video");
 		return -1;
@@ -330,10 +330,10 @@ int main(int argc, char** argv)
 
 		vector<Point> lines;
 		//lines = findEdgeLines(img, imgROI, 100, 300, "100~300");
-		
-		lines = findEdgeLines(img, imgROI, 70, 210, "70~210");
 
-		
+		lines = findEdgeLines(img, imgROI, 150, 180, "70~120");
+
+
 		//lines = findEdgeLines(img, blueROI, 100, 200, "blueROI100~200");
 
 		//lines = findEdgeLines(img, whiteROI, 100, 300, "whiteROI100~300");
@@ -356,12 +356,16 @@ int main(int argc, char** argv)
 		//findEdgeLines(imgROI1, 100, 300, "roi1");
 		//findEdgeLines(imgROI2, 100, 300, "roi2");
 
-		houghLineImage(img, imgROI, lines);
-		
-		
-		
+
+
+
+
+		//houghLineImage(img, imgROI, lines);
+
+
+
 		vector<Point> finalLines;
-		finalLines = find2Line(lines);
+		finalLines = find2Line(lines, img.cols);
 
 		//if (finalLines.empty() && (!p1.empty()))
 		/*if (finalLines.empty() && (!(p1.empty())))
@@ -396,12 +400,13 @@ int main(int argc, char** argv)
 }
 
 
-vector<Point> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, const char* windowName)
+vector<Point> findEdgeLines(Mat origin, Mat img, int lowThres, int highThres, const char* windowName)
 //vector<Vec2f> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, const char* windowName)
 {
 
 	int kernel_size = 3;
 
+	Mat original = origin.clone();
 	Mat contours = img.clone();
 	Mat dst1;
 	Canny(img, contours, lowThres, highThres, kernel_size);
@@ -519,6 +524,20 @@ vector<Point> findEdgeLines(Mat original, Mat img, int lowThres, int highThres, 
 
 
 	return lp;
+
+	//if (lp.size() == 4)
+	//	return lp;
+	//else
+	//{
+	//	vector<Point> result;
+	//	Point basePoint = Point(0, 0);
+	//	result.push_back(basePoint);
+	//	result.push_back(basePoint);
+	//	result.push_back(basePoint);
+	//	result.push_back(basePoint);
+
+	//	return result;
+	//}
 }
 
 
@@ -544,7 +563,7 @@ Mat houghLineImage(Mat img, Mat imgROI, vector<Point> red_lines) {
 	imshow("back1_contours", contours);
 
 
-	
+
 	// 선 감지 위한 허프 변환
 	std::vector<cv::Vec2f> lines;
 	cv::HoughLines(contours, lines, 1, CV_PI / 180, 15);
@@ -567,7 +586,7 @@ Mat houghLineImage(Mat img, Mat imgROI, vector<Point> red_lines) {
 			cv::Point pt1(rho / cos(theta), 0); // 첫 행에서 해당 선의 교차점
 			cv::Point pt2((rho - result.rows * sin(theta)) / cos(theta), result.rows);
 			// 마지막 행에서 해당 선의 교차점
-			cv::line(img, pt1, pt2, cv::Scalar(255,255,255), 5); // 하얀 선으로 그리기
+			cv::line(img, pt1, pt2, cv::Scalar(255, 255, 255), 5); // 하얀 선으로 그리기
 		}
 		//else { // 수평 행
 		//	cv::Point pt1(0, rho / sin(theta)); // 첫 번째 열에서 해당 선의 교차점
@@ -585,13 +604,13 @@ Mat houghLineImage(Mat img, Mat imgROI, vector<Point> red_lines) {
 	cv::namedWindow("houghLines_white");
 	cv::imshow("houghLines_white", img);
 
-		
+
 
 	return img;
 }
 
 
-vector<Point> find2Line(vector<Point> lines)
+vector<Point> find2Line(vector<Point> lines, int cols)
 {
 	vector<Point> result;
 
@@ -605,19 +624,45 @@ vector<Point> find2Line(vector<Point> lines)
 	rght1 = Point(0, 0);
 	rght2 = Point(0, 0);
 
+	int lcount = 0;
+	int rcount = 0;
+
 	if (!lines.empty())
 	{
 		if (lines.size() >= 4)
 		{
-			lft1 = lines[0];
-			lft2 = lines[1];
-			rght1 = lines[2];
-			rght2 = lines[3];
+			
+			for (int i = 0; i < lines.size(); i++)
+			{
+				Point p0 = lines[i];
+				if (p0.x > cols / 2 && rcount < 2)
+				{
+					
+					if (rcount == 0)
+					{
+						rght1 = p0;
+					}
+					else
+					{
+						rght2 = p0;
+					}
+					rcount++;
+
+				}
+				else if (p0.x < cols / 2 && lcount < 2)
+				{
+					if (lcount == 0)
+					{
+						lft1 = p0;
+					}
+					else
+					{
+						lft2 = p0;
+					}
+					lcount++;
+				}
+			}
 		}
-
-
-
-
 	}
 
 	// 결과 벡터 리턴
@@ -808,8 +853,8 @@ vector<Point> findMeanLine()
 
 Mat drawLines(Mat img, vector<Point> lines)
 {
-	line(img, lines[0], lines[1], Scalar(0, 0, 255), 2, 8);
-	line(img, lines[2], lines[3], Scalar(0, 0, 255), 2, 8);
+	line(img, lines[0], lines[1], Scalar(255, 0, 255), 2, 8);
+	line(img, lines[2], lines[3], Scalar(255, 255, 0), 2, 8);
 
 	imshow("line img", img);
 	return img;
