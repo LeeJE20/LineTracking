@@ -19,11 +19,18 @@ p1과 p2의 같은 인덱스의 Point는 한 라인을 이룬다.
 ## __0. Mat IncreaseContrast(Mat img) <br>__
 - 히스토그램 평활화
 
-## __1. Mat makeROI(Mat& img, int type) <br>__
-- int type : 리턴할 이미지를 어떻게 할지. 0: gray, 1: 전체 평활화, 2: 하단부 평활화
+## __0.1 Mat changeColor(Mat img, int color) <br>__
+- int color: 어떤 색을 추출할지. 0: blue, 1: white
+- 특정 색만 추출하여 흰색으로 만들고 나머지는 검정으로 만들어 줌
+- 구현: blue만 되어 있음
+
+
+## __1. Mat makeROI(Mat& img, int type, int makeGray = 1) <br>__
+- int type : 리턴할 이미지를 어떻게 할지. 0: gray, 1: 전체 평활화, 2: 하단부만 평활화
 - 흑백 변환
-- 대비 늘리기: IcreaseContrast 함수 사용
+- type에 따라 대비 늘리기: 수행 IcreaseContrast 함수 사용
 - 가우시안필터로 블러링
+
 
 ## __1.5 Mat hideNonROI(Mat& imgROI, int shape) <br>__
  - int shape: ROI 영역의 모양. 0: 아래쪽 절반, 1: 삼각형, 2: 사다리꼴
