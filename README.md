@@ -50,7 +50,7 @@ lftq1과 lftq2의 같은 인덱스의 Point는 한 라인을 이룬다.
 ## __3. vector&lt;Point&gt; find2Line(vector&lt;Point&gt; lines, int cols) <br>__
    - vector&lt;Point&gt; lines: findEdgeLines의 결과.
    - 여러 라인 중 차선으로 지정할 라인 찾기
-      ~~+ 거리가 가까운 라인끼리 클러스터 이룬 후 그 중 평균을 구한다.~~
+      + ~~거리가 가까운 라인끼리 클러스터 이룬 후 그 중 평균을 구한다.~~
       + lines의 size가 4개 미만이면 전부 Point(0,0)으로 채워진 벡터 리턴
       + 이미지 기준 왼쪽에 있으면 왼쪽 라인으로, 오른쪽에 있으면 오른쪽 라인으로 취급
       + 왼쪽 라인중 2개, 오른쪽 라인중2개를 선택
@@ -62,12 +62,12 @@ lftq1과 lftq2의 같은 인덱스의 Point는 한 라인을 이룬다.
 
 ## __4. void addNewPoint( vector&lt;Point&gt; lines) <br>__
   - find2Line 결과로 찾은 라인이 있는 경우 실행됨
-  - p1과 p2의 맨 앞 원소 삭제를 2회 반복
-  - p1과 p2의 맨 뒤에 새로 찾은 point 추가 (2회 반복)
+  - 포인트가 (0, 0)이 아니면 해당되는 큐에 포인트 넣고 하나 pop한다.
+    + 해당되는 큐는 lines의 인덱스에 따라 정해져 있다.
 
 ## 5. vector&lt;Point&gt; findMeanLine() <br>
-   - find2Line 결과로 찾은 라인이 없는 경우 실행됨
-   - 차선이 사라지기 전 지금까지의 20개 평균으로 찾기
+   - 지금까지의 10개 평균점으로 라인 찾기
+   - 큐에서 찾은 point들을 빼서 평균값을 구한다.
 
 ## 6. Mat drawLines(Mat img, vector&lt;Point&gt; lines) <br>
 - 원본 영상에 찾은 차선 표시
@@ -88,7 +88,8 @@ lftq1과 lftq2의 같은 인덱스의 Point는 한 라인을 이룬다.
 - 미구현
 
 ## 2. Mat houghLineImage(Mat img, Mat imgROI, vector&lt;Point&gt; red_lines)
-  
+- 
+
 ## 3. vector&lt;Point&gt; find2Line(vector&lt;Point&gt; lines, int cols)
   
 
