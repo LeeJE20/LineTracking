@@ -88,10 +88,23 @@ lftq1과 lftq2의 같은 인덱스의 Point는 한 라인을 이룬다.
 - 미구현
 
 ## 2. Mat houghLineImage(Mat img, Mat imgROI, vector&lt;Point&gt; red_lines)
-- 
+- 검은 바탕 영상에 허프라인스p로 찾은 라인을 두께 1, 흰색으로 그리기
+- 허프라인 적용해서 직선 찾기
 
-## 3. vector&lt;Point&gt; find2Line(vector&lt;Point&gt; lines, int cols)
-  
+## 3. vector&lt;Point&gt; find2Line(vector&lt;Point&gt; lines)
+- houghLineImage에서 찾은 허프라인을 입력받음
+- 직선 사이의 밝기 값의 평균이 가장 밝은 2가지 경우를 라인으로 인식
+- 직선 중 다른 직선과 너무 멀리 떨어져 있는 직선은 취급 안 함
+  - y = h와 러프라인 직선의 교차점들을 구함
+  - 교차점들 사이의 거리가 너무 멀면 취급 안 함
+- 교차점들 사이의 거리가 일정거리 이내인 경우
+  - 두 교차점의 중앙 픽셀을 구함
+  - 중앙 픽셀의 밝기 값을 가져옴
+  - 5개의 h에 대해서 밝기 값을 찾은 후, 밝기 값의 평균을 벡터에 저장
+- 벡터에서 제일 밝은 두 값을 선정
+  + 선정된 픽셀의 양 옆에 있는 라인이 찾던 차선이다.
+
+
 
 # Expansion
 * __앞에 장애물 생긴 경우__
