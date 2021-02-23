@@ -21,7 +21,7 @@ private: int histSize[1]; // 히스토그램 빈도수
 	   const float* ranges[1];
 	   int channels[1]; // 1채널만 사용
 
-public: Histogram1D() { // 1차원 히스토그램을 위한 인자 준비 
+public: Histogram1D() { //  1차원 히스토그램을 위한 인자 준비 
 	histSize[0] = 256;
 	hranges[0] = 0.0;
 	hranges[1] = 255.0;
